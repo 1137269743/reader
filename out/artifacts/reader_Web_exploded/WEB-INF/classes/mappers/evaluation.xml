@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.reader.mapper.EvaluationMapper">
+    <resultMap id="rmEvaluations" type="com.reader.entity.Evaluation">
+        <result property="member.username" column="username"/>
+        <result property="book.bookName" column="book_name"/>
+    </resultMap>
+    <select id="selectAllEvaluation" resultMap="rmEvaluations">
+        SELECT e.*,m.username,b.book_name
+        FROM evaluation e, member m, book b
+        WHERE e.book_id=b.book_id
+        AND e.member_id=m.member_id
+        LIMIT #{start},#{rows}
+    </select>
+    <select id="countAllEvaluation" resultType="int">
+        SELECT count(*)
+        FROM evaluation e, member m, book b
+        WHERE e.book_id=b.book_id
+          AND e.member_id=m.member_id
+    </select>
+</mapper>
