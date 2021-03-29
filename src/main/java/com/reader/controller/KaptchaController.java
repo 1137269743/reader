@@ -39,6 +39,7 @@ public class KaptchaController {
         BufferedImage image = kaptchaProducer.createImage(verifyCode);
         ServletOutputStream out = response.getOutputStream();
         ImageIO.write(image, "png", out);
+        System.out.println("verifyCode:" + request.getSession().getAttribute("kaptchaVerifyCode"));
         out.flush();
         out.close();
     }

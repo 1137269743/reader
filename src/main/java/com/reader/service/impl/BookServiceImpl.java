@@ -3,6 +3,7 @@ package com.reader.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.google.gson.Gson;
 import com.reader.entity.Book;
 import com.reader.entity.Evaluation;
 import com.reader.entity.MemberReadState;
@@ -13,6 +14,7 @@ import com.reader.service.BookService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import redis.clients.jedis.Jedis;
 
 import javax.annotation.Resource;
 
@@ -39,6 +41,12 @@ public class BookServiceImpl implements BookService {
      */
     @Override
     public IPage<Book> paging(Long categoryId, String order, Integer page, Integer rows) {
+        Jedis jedis = new Jedis("127.0.0.1",6379);
+        String key = "c" + categoryId + "o" + order + "p" + page + "r" + rows;
+        if (jedis.get(key) != null) {
+            String value = jedis.get(key);
+            return  (new Gson().fromJson(value, Page.class));
+        }
         Page<Book> p = new Page<Book>(page, rows);
         QueryWrapper<Book> queryWrapper = new QueryWrapper<Book>();
         if (categoryId != null && categoryId != -1) {
@@ -52,6 +60,8 @@ public class BookServiceImpl implements BookService {
             }
         }
         IPage<Book> pageObject = bookMapper.selectPage(p, queryWrapper);
+        String value = new Gson().toJson(pageObject);
+        jedis.set(key, value);
         return pageObject;
     }
 

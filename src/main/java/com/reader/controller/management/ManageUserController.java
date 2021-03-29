@@ -23,25 +23,21 @@ public class ManageUserController {
     @Resource
     private UserService userService;
 
-    @PostMapping("/check_login")
+    @PostMapping("/management/check_login")
     @ResponseBody
     public Map checkLogin(String username, String password, String vc, HttpSession session) {
         String verifyCode = (String) session.getAttribute("kaptchaVerifyCode");
         Map result = new HashMap();
-        if (vc == null || verifyCode == null || !vc.equalsIgnoreCase(verifyCode)) {
-            result.put("code", "VC01");
-            result.put("msg", "验证码错误");
-        } else {
-            try {
-                User user = userService.checkLogin(username, password);
-                session.setAttribute("loginUser", user);
-                result.put("code", "0");
-                result.put("msg", "success");
-            } catch (BusinessException e) {
-                e.printStackTrace();
-                result.put("code", e.getCode());
-                result.put("msg", e.getMsg());
-            }
+
+        try {
+            User user = userService.checkLogin(username, password);
+            session.setAttribute("loginUser", user);
+            result.put("code", "0");
+            result.put("msg", "success");
+        } catch (BusinessException e) {
+            e.printStackTrace();
+            result.put("code", e.getCode());
+            result.put("msg", e.getMsg());
         }
         return result;
     }

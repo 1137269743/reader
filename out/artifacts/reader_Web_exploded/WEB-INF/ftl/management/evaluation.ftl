@@ -77,7 +77,7 @@
                     if (d.state == "enable") {
                         return "<button class='layui-btn layui-btn-sm btn-disable'  data-id='" + d.evaluationId + "' data-type='disable' onclick='showDisable(this)'>禁用</button>";
                     } else {
-                        return "<button class='layui-btn layui-btn-sm layui-btn-disabled btn-disable' >已禁用</button>";
+                        return "<button class='layui-btn layui-btn-sm layui-btn-disabled btn-disable' title='禁用原因："+d.disableReason+"'>已禁用</button>";
                     }
                 }
             }

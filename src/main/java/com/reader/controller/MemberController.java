@@ -63,6 +63,8 @@ public class MemberController {
     @ResponseBody
     public Map checkLogin(String username, String password, String vc, HttpSession session) {
         String verifyCode = (String) session.getAttribute("kaptchaVerifyCode");
+        System.out.println("verifyCode:" + verifyCode);
+        System.out.println("vc:" + vc);
         Map result = new HashMap();
         if (vc == null || verifyCode == null || !vc.equalsIgnoreCase(verifyCode)) {
             result.put("code", "VC01");
